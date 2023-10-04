@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   build-and-push:
-    name: Build api
+    name: Build ${{ github.repository }}
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -20,7 +20,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: schizo99/${{ github.repository }}
+        images: ${{ github.repository }}
         tags: latest
     - name: Build and push image
       uses: docker/build-push-action@v5
