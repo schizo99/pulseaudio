@@ -1,8 +1,24 @@
 const express = require('express');
 const { exec } = require('child_process');
 const app = express();
+const Docker = require('dockerode');
+const docker = new Docker();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+
+
+const restartContainer = async () => {
+  let containers = await docker.listContainers();
+  let c = containers.filter(c => c.Names.includes("/squeezelite"));
+  let container = docker.getContainer(c[0].Id);
+  try {
+      await container.restart()
+      return "", true
+  } catch (error) {
+      console.log(error)
+      return error, false
+  }
+}
 
 const systemctl = async (command, service) => {
   return new Promise((resolve, reject) => {
@@ -33,6 +49,16 @@ app.get('/', async (req, res) => {
       res.send("Unable to restart Pulseaudio")
       return
     }
+    let error, ok = await restartContainer();
+    if (ok) {
+      console.log("Successfully restarted squeezelite container and pulseaudio")
+      res.send("Successfully restarted squeezelite container and pulseaudio")
+    } else {
+      console.log("Unable to restart squeezelite container", error)
+      res.status(500)
+      res.send(error)
+      return
+    }
 //    await systemctl("stop", "mpg123")
 //    await delay(500)
 //    await systemctl("start", "mpg123")
@@ -50,8 +76,8 @@ app.get('/', async (req, res) => {
 //      }
 //    }
 //    if (status_ok) {
-      console.log("Pulseaudio successfully restarted")
-      res.send("Pulseaudio successfully restarted")
+      // console.log("Pulseaudio successfully restarted")
+      // res.send("Pulseaudio successfully restarted")
 //    } else {
 //      console.log("Failed to restart Pulseaudio")
 //      res.status(500)
