@@ -33,30 +33,30 @@ app.get('/', async (req, res) => {
       res.send("Unable to restart Pulseaudio")
       return
     }
-    await systemctl("stop", "mpg123")
-    await delay(500)
-    await systemctl("start", "mpg123")
-    await delay(1000)
-    let status_ok = false
-    let counter = 0
-    while (!status_ok && counter < 5) {
-      status = await systemctl("is-active", "mpg123")
-      if (status != "active\n" && status === "activating\n") {
-        counter++
-        console.log("mpg123 still starting!")
-        await delay(2000)
-      } else if (status === "active\n") {
-        status_ok = true
-      }
-    }
-    if (status_ok) {
+//    await systemctl("stop", "mpg123")
+//    await delay(500)
+//    await systemctl("start", "mpg123")
+//    await delay(1000)
+//    let status_ok = false
+//    let counter = 0
+//    while (!status_ok && counter < 5) {
+//      status = await systemctl("is-active", "mpg123")
+//      if (status != "active\n" && status === "activating\n") {
+//        counter++
+//        console.log("mpg123 still starting!")
+//        await delay(2000)
+//      } else if (status === "active\n") {
+//        status_ok = true
+//      }
+//    }
+//    if (status_ok) {
       console.log("Pulseaudio successfully restarted")
       res.send("Pulseaudio successfully restarted")
-    } else {
-      console.log("Failed to restart Pulseaudio")
-      res.status(500)
-      res.send("Failed to restart Pulseaudio")
-    }
+//    } else {
+//      console.log("Failed to restart Pulseaudio")
+//      res.status(500)
+//      res.send("Failed to restart Pulseaudio")
+//    }
   } catch (error) {
     console.log("Unable to restarting services.", error)
     res.status(500)
