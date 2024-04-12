@@ -5,9 +5,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --prod
 
 RUN apt update && apt install -y systemd
-
+RUN groupadd -g 973 docker
 # Switch to user
-USER 1000
+USER 1000:973
 COPY index.js .
 
 ENV XDG_RUNTIME_DIR="/run/user/1000"
