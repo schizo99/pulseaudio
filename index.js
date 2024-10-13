@@ -59,11 +59,6 @@ const systemctl = async (command, service) => {
           throw (error);
         }
       }
-
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        throw (stderr);
-      }
       resolve(stdout);
     });
   });
