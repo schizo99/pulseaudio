@@ -40,11 +40,6 @@ const startContainer = async () => {
           console.error(`error: ${error.message}`);
           throw (error);
       }
-
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        throw (stderr);
-      }
       resolve(stdout);
     });
   });
@@ -58,6 +53,11 @@ const systemctl = async (command, service) => {
           console.error(`error: ${error.message}`);
           throw (error);
         }
+      }
+
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        throw (stderr);
       }
       resolve(stdout);
     });
