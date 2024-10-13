@@ -5,7 +5,7 @@ const Docker = require('dockerode');
 const docker = new Docker();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-
+const device = process.env.DEVICE || '00:13:EF:BF:FA:D6';
 
 const restartContainer = async () => {
   let containers = await docker.listContainers();
@@ -54,6 +54,23 @@ const systemctl = async (command, service) => {
           console.error(`error: ${error.message}`);
           throw (error);
         }
+      }
+
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        throw (stderr);
+      }
+      resolve(stdout);
+    });
+  });
+}
+
+const bluetoothctl = async (command, device) => {
+  return new Promise((resolve, reject) => {
+    exec(`bluetoothctl ${command} ${device}`, { "shell": "/bin/bash" }, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`error: ${error.message}`);
+        throw (error);
       }
 
       if (stderr) {
@@ -116,6 +133,8 @@ app.get('/restart', async (req, res) => {
 
 app.get('/stop', async (req, res) => {
   try {
+    let status = await bluetoothctl("disconnect", device)
+    console.log(status)
     let error, ok = await stopContainer();
     if (ok) {
       console.log("Successfully stopped squeezelite container and pulseaudio")
@@ -134,6 +153,24 @@ app.get('/stop', async (req, res) => {
 
 });
 
+app.get('/start', async (req, res) => {
+  try {
+    let error, ok = await startContainer();
+    if (ok) {
+      console.log("Successfully started squeezelite container and pulseaudio")
+      res.send("Successfully started squeezelite container and pulseaudio")
+    } else {
+      console.log("Unable to start squeezelite container", error)
+      res.status(500)
+      res.send(error)
+      return
+    }
+  } catch (error) {
+    console.log("Unable to start services.", error)
+    res.status(500)
+    res.send(error)
+  }
+});
 
 app.listen(3333, () => {
   console.log('Server listening on port 3333');
