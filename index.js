@@ -34,16 +34,20 @@ const stopContainer = async () => {
 }
 
 const startContainer = async () => {
-  let containers = await docker.listContainers();
-  let c = containers.filter(c => c.Names.includes("/squeezelite"));
-  let container = docker.getContainer(c[0].Id);
-  try {
-      await container.start()
-      return "", true
-  } catch (error) {
-      console.log(error)
-      return error, false
-  }
+  return new Promise((resolve, reject) => {
+    exec(`docker compose up -d`, { "shell": "/bin/bash", "cwd": "/home/schizo/dc/media" }, (error, stdout, stderr) => {
+      if (error) {
+          console.error(`error: ${error.message}`);
+          throw (error);
+      }
+
+      if (stderr) {
+        console.error(`stderr: ${stderr}`);
+        throw (stderr);
+      }
+      resolve(stdout);
+    });
+  });
 }
 
 const systemctl = async (command, service) => {
@@ -155,8 +159,9 @@ app.get('/stop', async (req, res) => {
 
 app.get('/start', async (req, res) => {
   try {
-    let error, ok = await startContainer();
-    if (ok) {
+    let status = await startContainer();
+    console.log(status)
+    if (status != undefined) {
       console.log("Successfully started squeezelite container and pulseaudio")
       res.send("Successfully started squeezelite container and pulseaudio")
     } else {
@@ -166,7 +171,7 @@ app.get('/start', async (req, res) => {
       return
     }
   } catch (error) {
-    console.log("Unable to start services.", error)
+    console.log("Unable to start squeezelite.", error)
     res.status(500)
     res.send(error)
   }
