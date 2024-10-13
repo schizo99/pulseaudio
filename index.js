@@ -107,7 +107,7 @@ app.get('/restart', async (req, res) => {
     await systemctl("restart", "pulseaudio")
     await delay(100)
     let status = await systemctl("is-active", "pulseaudio")
-    if (status == "active\n") {
+    if (status != "active\n") {
       console.log("Unable to stop Pulseaudio")
       res.send("Unable to stop Pulseaudio")
       return
