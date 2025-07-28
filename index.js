@@ -37,8 +37,9 @@ const startContainer = async () => {
   return new Promise((resolve, reject) => {
     exec(`docker compose up -d`, { "shell": "/bin/bash", "cwd": "/home/schizo/dc/media" }, (error, stdout, stderr) => {
       if (error) {
-          console.error(`error: ${error.message}`);
-          throw (error);
+        console.error(`error: ${error.message}`);
+        reject(error);
+        return;
       }
       resolve(stdout);
     });
@@ -51,13 +52,15 @@ const systemctl = async (command, service) => {
       if (error) {
         if (error.code === 3 && command != "is-active") {
           console.error(`error: ${error.message}`);
-          throw (error);
+          reject(error);
+          return;
         }
       }
 
       if (stderr) {
         console.error(`stderr: ${stderr}`);
-        throw (stderr);
+        reject(stderr);
+        return;
       }
       resolve(stdout);
     });
@@ -69,12 +72,14 @@ const bluetoothctl = async (command, device) => {
     exec(`bluetoothctl ${command} ${device}`, { "shell": "/bin/bash" }, (error, stdout, stderr) => {
       if (error) {
         console.error(`error: ${error.message}`);
-        throw (error);
+        reject(error);
+        return;
       }
 
       if (stderr) {
         console.error(`stderr: ${stderr}`);
-        throw (stderr);
+        reject(stderr);
+        return;
       }
       resolve(stdout);
     });
