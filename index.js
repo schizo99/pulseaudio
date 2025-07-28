@@ -2,7 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const app = express();
 const Docker = require('dockerode');
-const DockerCompoise = require('dockerode-compose');
+const DockerCompose = require('dockerode-compose');
 const docker = new Docker();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -36,7 +36,7 @@ const stopContainer = async () => {
 
 const startContainer = async () => {
   return new Promise((resolve, reject) => {
-    const compose = new DockerodeCompose(docker, '/home/schizo/dc/media', 'wordpress');
+    const compose = new DockerCompose(docker, '/home/schizo/dc/media', 'wordpress');
     compose.upAll((err, data) => {
       if (err) {
         console.error(`error: ${err.message}`);
