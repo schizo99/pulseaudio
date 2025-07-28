@@ -279,21 +279,12 @@ app.get('/', async (req, res) => {
               setTimeout(() => {
                 allButtons.forEach(btn => btn.disabled = false);
               }, 1000);
-            }
-          }
-
-          // Auto-hide status messages after 5 seconds
-          function autoHideStatus() {
-            const statusDiv = document.getElementById('status');
-            if (statusDiv.style.display === 'block') {
+              // Hide status after 5 seconds
               setTimeout(() => {
                 statusDiv.style.display = 'none';
               }, 5000);
             }
           }
-
-          // Check for status changes
-          setInterval(autoHideStatus, 100);
         </script>
       </body>
     </html>
