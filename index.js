@@ -2,6 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 const app = express();
 const Docker = require('dockerode');
+const DockerCompoise = require('dockerode-compose');
 const docker = new Docker();
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
@@ -35,14 +36,15 @@ const stopContainer = async () => {
 
 const startContainer = async () => {
   return new Promise((resolve, reject) => {
-    exec(`docker compose up -d`, { "shell": "/bin/bash", "cwd": "/home/schizo/dc/media" }, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`error: ${error.message}`);
-        reject(error);
+    const compose = new DockerodeCompose(docker, '/home/schizo/dc/media', 'wordpress');
+    compose.upAll((err, data) => {
+      if (err) {
+        console.error(`error: ${err.message}`);
+        reject(err);
         return;
       }
-      resolve(stdout);
     });
+    resolve("Container started successfully");
   });
 }
 
