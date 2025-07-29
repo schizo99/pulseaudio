@@ -36,6 +36,12 @@ const stopContainer = async () => {
 
 const startContainer = async () => {
   const compose = new DockerCompose(docker, '/app/media/docker-compose.yml', 'media');
+  try {
+    await compose.down();
+  } catch (error) {
+    console.error("Error during compose down:", error);
+    return error;
+  }
   return await compose.up();
 };
 
