@@ -37,7 +37,7 @@ const stopContainer = async () => {
 const startContainer = async () => {
   return new Promise((resolve, reject) => {
     const compose = new DockerCompose(docker, '/app/media/docker-compose.yml', 'media');
-    compose.upAll((err, data) => {
+    compose.up((err, data) => {
       if (err) {
         console.error(`error: ${err.message}`);
         reject(err);
