@@ -35,15 +35,16 @@ const stopContainer = async () => {
 }
 
 const startContainer = async () => {
-  const compose = new DockerCompose(docker, '/app/media/docker-compose.yml', 'media');
-  try {
-    await compose.down();
-  } catch (error) {
-    console.error("Error during compose down:", error);
-    return error;
-  }
-  return await compose.up();
-};
+  return new Promise((resolve, reject) => {
+    exec(`docker compose up -d`, { "shell": "/bin/bash", "cwd": "/home/schizo/dc/lms" }, (error, stdout, stderr) => {
+      if (error) {
+          console.error(`error: ${error.message}`);
+          reject(error);
+      }
+      resolve(stdout);
+    });
+  });
+}
 
 const systemctl = async (command, service) => {
   return new Promise((resolve, reject) => {
