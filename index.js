@@ -41,11 +41,6 @@ const startContainer = async () => {
           console.error(`error: ${error.message}`);
           reject(error);
       }
-      if (stderr) {
-        console.error(`stderr: ${stderr}`);
-        reject(stderr);
-        return;
-      }
       resolve(stdout);
     });
   });
