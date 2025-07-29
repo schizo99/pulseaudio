@@ -35,18 +35,9 @@ const stopContainer = async () => {
 }
 
 const startContainer = async () => {
-  return new Promise((resolve, reject) => {
-    const compose = new DockerCompose(docker, '/app/media/docker-compose.yml', 'media');
-    compose.up((err, data) => {
-      if (err) {
-        console.error(`error: ${err.message}`);
-        reject(err);
-        return;
-      }
-    });
-    resolve("Container started successfully");
-  });
-}
+  const compose = new DockerCompose(docker, '/app/media/docker-compose.yml', 'media');
+  return await compose.up();
+};
 
 const systemctl = async (command, service) => {
   return new Promise((resolve, reject) => {
