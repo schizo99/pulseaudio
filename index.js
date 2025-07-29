@@ -36,7 +36,7 @@ const stopContainer = async () => {
 
 const startContainer = async () => {
   return new Promise((resolve, reject) => {
-    exec(`docker compose up -d`, { "shell": "/bin/bash", "cwd": "/home/schizo/dc/lms" }, (error, stdout, stderr) => {
+    exec(`docker compose up -d -f /app/lms/docker-compose.yml`, (error, stdout, stderr) => {
       if (error) {
           console.error(`error: ${error.message}`);
           reject(error);
